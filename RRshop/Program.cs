@@ -1,7 +1,21 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
+using RRshop.Models;
+using System;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).
+    AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, (conf) => conf.LoginPath = "/Account/Login");
+builder.Services.AddAuthorization();
+
+builder.Services.AddDbContext<rrshopContext>(options =>
+options.UseMySql(builder.Configuration.GetConnectionString("MySql"), ServerVersion.Parse("8.0.32-mysql")));
 
 var app = builder.Build();
 
@@ -18,7 +32,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllerRoute(
     name: "default",
@@ -27,3 +43,5 @@ app.MapControllerRoute(
 app.Run();
 
 //Scaffold-DbContext "Server=localhost; Port=3306; Database=rrshop; Uid=root; Pwd=root" Pomelo.EntityFrameworkCore.MySql -OutputDir Models -f
+
+//dotnet aspnet-codegenerator controller -m Category -dc MyDbContext -rrshopContext CategoriesController -async

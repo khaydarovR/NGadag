@@ -18,6 +18,11 @@ namespace RRshop.Controllers
             return View();
         }
 
+        public IActionResult Categories()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();
