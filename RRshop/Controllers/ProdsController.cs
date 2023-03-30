@@ -1,17 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using RRshop.DTO;
 using RRshop.Models;
+using RRshop.ViewModels;
+using System.Net.Http.Headers;
 
 namespace RRshop.Controllers
 {
     public class ProdsController : Controller
     {
         private readonly rrshopContext _context;
+        private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _env;
 
-        public ProdsController(rrshopContext context)
+        public ProdsController(rrshopContext context, IMapper mapping, IWebHostEnvironment env)
         {
             _context = context;
+            _mapper = mapping;
+            _env = env;
         }
 
         // GET: Prods
@@ -43,26 +51,27 @@ namespace RRshop.Controllers
         // GET: Prods/Create
         public IActionResult Create()
         {
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id");
+            ViewData["CategoryTitle"] = new SelectList(_context.Categories, "Id", "Title");
             return View();
         }
 
-        // POST: Prods/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Id,Title,CategoryId,Price,Color,SaleQuantity,ImgPath")] Prod prod)
+        public async Task<IActionResult> Create(CreateProdViewModel viewModel)
         {
+            Prod? newProd = _mapper.Map<Prod>(viewModel);
+
             if (ModelState.IsValid)
             {
-                _context.Add(prod);
+                _context.Add(newProd);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", prod.CategoryId);
-            return View(prod);
+            ViewData["CategoryTitle"] = new SelectList(_context.Categories, "Id", "Title");
+            return View(viewModel);
         }
 
+        
         // GET: Prods/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -76,27 +85,31 @@ namespace RRshop.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", prod.CategoryId);
-            return View(prod);
+            ViewData["CategoryTitle"] = new SelectList(_context.Categories, "Id", "Title");
+            
+            var viewModel = _mapper.Map<EditProdViewModel>(prod);
+            return View(viewModel);
         }
 
-        // POST: Prods/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,CategoryId,Price,Color,SaleQuantity,ImgPath")] Prod prod)
+        public async Task<IActionResult> Edit(int id, EditProdViewModel viewModel)
         {
-            if (id != prod.Id)
-            {
-                return NotFound();
-            }
+            int nid = id;
+            //var prodDb = _context.Prods.First(pr => pr.Id == nid);
+
+            var prod = _mapper.Map<Prod>(viewModel);
+
+            if (viewModel.IsDefaultImage) ResetImage();
+
+            if (id != prod.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Update(prod);
-                    await _context.SaveChangesAsync();
+                    _context.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -111,9 +124,10 @@ namespace RRshop.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", prod.CategoryId);
+            ViewData["CategoryTitle"] = new SelectList(_context.Categories, "Id", "Title");
             return View(prod);
         }
+
 
         // GET: Prods/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -145,6 +159,8 @@ namespace RRshop.Controllers
             var prod = await _context.Prods.FindAsync(id);
             if (prod != null)
             {
+                DirectoryInfo df = new DirectoryInfo(_env.WebRootPath + "/img/prod/" + prod.ImgPath);
+
                 _context.Prods.Remove(prod);
             }
 
@@ -155,6 +171,62 @@ namespace RRshop.Controllers
         private bool ProdExists(int id)
         {
             return (_context.Prods?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        private async Task<string> SaveImage(ImageModel imageModel)
+        {
+            if (imageModel != null)
+            {
+                DirectoryInfo directoryInfo = new DirectoryInfo(_env.WebRootPath + "/img/prod");
+                if (directoryInfo.Exists) { directoryInfo.Create(); }
+            }
+
+            string fileName = Path.GetFileNameWithoutExtension(imageModel.ImageFile.FileName);
+            string extension = Path.GetExtension(imageModel.ImageFile.FileName).ToLower();
+
+            string fulFilename = imageModel.ProdId + fileName + extension;
+            string fullPath = Path.Combine(_env.WebRootPath + "/img/prod/" + fulFilename);
+
+            using (var fileStream = new FileStream(fullPath, FileMode.Create))
+            {
+                await imageModel.ImageFile.CopyToAsync(fileStream);
+            }
+
+            return fulFilename;
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> AddImage(int id)
+        {
+            ImageModel image = new ImageModel() { ProdId = id };
+            return View(image);
+
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> AddImage(ImageModel imageModel)
+        {
+            if (ModelState.IsValid)
+            {
+                string fulFilename = await SaveImage(imageModel);
+
+                var dbProd = await _context.Prods.FirstAsync(db => db.Id == imageModel.ProdId);
+                dbProd.ImgPath = fulFilename;
+                _context.Update(dbProd);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(imageModel);
+        }
+
+
+        private void ResetImage()
+        {
+            throw new NotImplementedException();
         }
     }
 }

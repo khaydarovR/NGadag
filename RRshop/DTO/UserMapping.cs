@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using RRshop.Models;
-using RRshop.Models.ViewModels;
+using RRshop.ViewModels;
 
 namespace RRshop.DTO
 {
-    public class MappingUser : Profile
+    public class UserMapping : Profile
     {
-        public MappingUser()
+        public UserMapping()
         {
             CreateMap<RegisterViewModel, User>();
             CreateMap<LoginViewModel, User>();

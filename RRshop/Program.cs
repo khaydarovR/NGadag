@@ -17,7 +17,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddDbContext<rrshopContext>(options =>
 options.UseMySql(builder.Configuration.GetConnectionString("MySql"), ServerVersion.Parse("8.0.32-mysql")));
 
-builder.Services.AddAutoMapper(typeof(MappingUser));
+builder.Services.AddAutoMapper(typeof(UserMapping));
 
 var app = builder.Build();
 

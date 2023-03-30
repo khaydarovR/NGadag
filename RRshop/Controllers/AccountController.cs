@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RRshop.Data;
 using RRshop.Models;
-using RRshop.Models.ViewModels;
+using RRshop.ViewModels;
 using System.Security.Claims;
 
 namespace RRshop.Controllers
