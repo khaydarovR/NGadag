@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace RRshop.Models
+﻿namespace RRshop.Models
 {
     public partial class User
     {

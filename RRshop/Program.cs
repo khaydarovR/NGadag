@@ -1,8 +1,8 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using MySqlConnector;
+using RRshop.DTO;
 using RRshop.Models;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +16,8 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddDbContext<rrshopContext>(options =>
 options.UseMySql(builder.Configuration.GetConnectionString("MySql"), ServerVersion.Parse("8.0.32-mysql")));
+
+builder.Services.AddAutoMapper(typeof(MappingUser));
 
 var app = builder.Build();
 

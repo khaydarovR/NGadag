@@ -21,8 +21,7 @@
                     <li class="list-group-item">Город: @Model.City</li>
                 </ul>
             </div>
-            <a class="btn btn-outline-danger" asp-controller="Account" asp-action="Logout">Выйти</a>
-            <a class="btn btn-outline-warning" asp-controller="Account" asp-action="Edit">Редактировать</a>
+            <a class="btn btn-danger" asp-controller="Account" asp-action="Logout">Выйти</a>
         </div>
 
         @if (User.IsInRole("root"))

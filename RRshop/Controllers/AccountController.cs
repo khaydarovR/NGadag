@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RRshop.Data;
 using RRshop.Models;
+using RRshop.Models.ViewModels;
 using System.Security.Claims;
 
 namespace RRshop.Controllers
@@ -12,10 +14,12 @@ namespace RRshop.Controllers
     public class AccountController : Controller
     {
         private readonly rrshopContext _context;
+        private readonly IMapper _mapper;
 
-        public AccountController(rrshopContext context)
+        public AccountController(rrshopContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: AccountController
@@ -24,7 +28,7 @@ namespace RRshop.Controllers
         {
             int _id = int.Parse(s: HttpContext.User.FindFirst("id").Value);
             User model = await _context.Users.FirstOrDefaultAsync(m => m.Id == _id);
-            
+
             if (model == null)
             {
                 return NotFound();
@@ -39,23 +43,28 @@ namespace RRshop.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Register(User model)
+        public async Task<IActionResult> Register(RegisterViewModel viewModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
+            if (!ModelState.IsValid) return View(viewModel);
+
+            User newUser = _mapper.Map<User>(viewModel);
+            newUser.Role = Roles.SUser;
 
             try
             {
-                _context.Add(model);
+                _context.Add(newUser);
                 await _context.SaveChangesAsync();
+
+                User? userDB = await _context.Users.FirstOrDefaultAsync(usr => usr.Phone == newUser.Phone);
+                var principal = GetClaimsPrincipalDefault(userDB);
+                await HttpContext.SignInAsync(principal);
+
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception e)
             {
                 ModelState.AddModelError("Ошибка регистрации ", e.Message);
-                return View(model);
+                return View(viewModel);
             }
 
         }
@@ -65,15 +74,21 @@ namespace RRshop.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Login(User model)
+        public async Task<IActionResult> Login(LoginViewModel viewModel)
         {
-            if (!ModelState.IsValid) return View(model);
-            User userDB;
+            if (!ModelState.IsValid) return View(viewModel);
+            User logUser = _mapper.Map<User>(viewModel);
+
             try
             {
-                userDB = await _context.Users.FindAsync(model.Phone);
+                User? userDB = await _context.Users.FirstOrDefaultAsync(db => db.Phone == logUser.Phone);
+                if (userDB is null)
+                {
+                    ModelState.AddModelError("", "Пользователь не найден");
+                    return View(viewModel);
+                }
 
-                if (model.Password == userDB.Password)
+                if (userDB.Password == logUser.Password)
                 {
 
                     var principal = GetClaimsPrincipalDefault(userDB);
@@ -86,8 +101,8 @@ namespace RRshop.Controllers
             }
             catch (Exception e)
             {
-                ModelState.AddModelError("Ошибка при входе", e.Message);
-                return View(model);
+                ModelState.AddModelError("", e.Message);
+                return View(viewModel);
             }
         }
 
@@ -107,5 +122,10 @@ namespace RRshop.Controllers
             return claimPrincipal;
         }
 
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

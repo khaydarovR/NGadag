@@ -1,5 +1,5 @@
-﻿@using RRshop.Models;
-@model User;
+﻿@using RRshop.Models.ViewModels;
+@model RegisterViewModel;
 @{
     ViewBag.Title = "Регистрация";
 }
@@ -7,7 +7,7 @@
     <div class="row d-flex justify-content-center align-items-center h-10">
         <div class="col-lg-8 col-xl-6">
             <div class="card rounded-3 bg-light">
-                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/img3.webp"
+                <img src="https://cdn.decrypt.co/wp-content/uploads/2022/11/nike-cryptokicks-alt-gID_6.png"
                      class="w-100" style="border-top-left-radius: .3rem; border-top-right-radius: .3rem;"
                      alt="Sample photo">
                 <div class="card-body p-4 p-md-5">
@@ -17,15 +17,29 @@
                         <div class="validation" asp-validation-summary="All"></div>
 
                         <div class="form-outline mb-4">
-                            <span class="text-danger" asp-validation-for="Phone">Номер телефона (8 9XX ...)</span>
-                            <input type="text" id="form3Example1q" class="form-control" asp-for="Phone" />
-                            <label class="form-label" asp-for="Phone">Телефон</label>
+                            <span class="text-danger" asp-validation-for="Name"></span>
+                            <input type="text" id="form3Example1q" class="form-control" asp-for="Name" />
+                            <label class="form-label" asp-for="Name">Имя</label>
                         </div>
-
                         <div class="form-outline mb-4">
-                            <span calss="text-danger" asp-validation-for="Password">Пароль</span>
+                            <span class="text-danger" asp-validation-for="Phone"></span>
+                            <input type="text" id="form3Example1q" class="form-control" asp-for="Phone" />
+                            <label class="form-label" asp-for="Phone">Номер телефона</label>
+                        </div>
+                        <div class="form-outline mb-4">
+                            <span class="text-danger" asp-validation-for="City"></span>
+                            <input type="text" id="form3Example1q" class="form-control" asp-for="City" />
+                            <label class="form-label" asp-for="City">Город</label>
+                        </div>
+                        <div class="form-outline mb-4">
+                            <span calss="text-danger" asp-validation-for="Password"></span>
                             <input type="text" id="form3Example1q" class="form-control" asp-for="Password" />
                             <label class="form-label" asp-for="Password">Пароль</label>
+                        </div>
+                        <div class="form-outline mb-4">
+                            <span calss="text-danger" asp-validation-for="PasswordConfirm"></span>
+                            <input type="text" id="form3Example1q" class="form-control" asp-for="PasswordConfirm" />
+                            <label class="form-label" asp-for="PasswordConfirm">Повторите пароль</label>
                         </div>
 
                         <button asp-action="Register" type="submit" class="btn btn-success btn-lg mb-1">Зарегистрироваться</button>

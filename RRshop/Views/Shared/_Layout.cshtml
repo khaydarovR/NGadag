@@ -1,5 +1,6 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@using RRshop.Data;
+<!DOCTYPE html>
+<html lang="ru">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -31,6 +32,26 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Prods" asp-action="Index">Товары</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Пользователи</a>
+                        </li>
+
+                        <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
+                            <ul class="navbar-nav d-sm-inline-flex justify-content-end">
+                                @if (User.IsInRole(Roles.SUser))
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-success bg-light border-1" asp-area="" asp-controller="Account" asp-action="Register">Корзина</a>
+                                    </li>
+                                }
+                                <li class="nav-item">
+                                    <a class="nav-link text-success bg-light border-1" asp-area="" asp-controller="Account" asp-action="Index">Аккаунт</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-success bg-light border-1" asp-area="" asp-controller="Account" asp-action="Register">Регистрация</a>
+                                </li>
+                            </ul>
+                        </div>
                     </ul>
                 </div>
             </div>
