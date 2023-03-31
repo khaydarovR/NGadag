@@ -2,10 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using RRshop.DTO;
 using RRshop.Models;
 using RRshop.ViewModels;
-using System.Net.Http.Headers;
 
 namespace RRshop.Controllers
 {
@@ -71,7 +69,7 @@ namespace RRshop.Controllers
             return View(viewModel);
         }
 
-        
+
         // GET: Prods/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -86,21 +84,19 @@ namespace RRshop.Controllers
                 return NotFound();
             }
             ViewData["CategoryTitle"] = new SelectList(_context.Categories, "Id", "Title");
-            
+
             var viewModel = _mapper.Map<EditProdViewModel>(prod);
             return View(viewModel);
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, EditProdViewModel viewModel)
+        public IActionResult Edit(int id, EditProdViewModel viewModel)
         {
-            int nid = id;
-            //var prodDb = _context.Prods.First(pr => pr.Id == nid);
 
             var prod = _mapper.Map<Prod>(viewModel);
 
-            if (viewModel.IsDefaultImage) ResetImage();
+            if (viewModel.IsDefaultImage) { ResetImage(viewModel.Id); }
 
             if (id != prod.Id) return NotFound();
 
@@ -108,7 +104,15 @@ namespace RRshop.Controllers
             {
                 try
                 {
-                    _context.Update(prod);
+
+                    string? title = prod.Title;
+                    string? color = prod.Color;
+                    _context.Database.ExecuteSqlInterpolated(@$"UPDATE prod SET title = {title},
+                                                                category_id = {prod.CategoryId},
+                                                                price = {prod.Price},
+                                                                color = {color},
+                                                                sale_quantity = {prod.SaleQuantity}
+                                                                WHERE id = {id}");
                     _context.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -224,9 +228,11 @@ namespace RRshop.Controllers
         }
 
 
-        private void ResetImage()
+        private void ResetImage(int id)
         {
-            throw new NotImplementedException();
+            var prod = _context.Prods.First(db => db.Id == id);
+            prod.ImgPath = "default.png";
+            _context.SaveChanges();
         }
     }
 }
