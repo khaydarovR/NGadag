@@ -3,7 +3,7 @@
 }
 @model User
 
-<div class="container text-right">
+<div class="container text-center">
     <div class="row align-items-end">
         <div class="col">
             <h1 class="display-4">Личный кабинет</h1>
@@ -11,12 +11,14 @@
             <div class="card" style="width: 18rem;">
                 <img src="https://cdn-icons-png.flaticon.com/512/1869/1869679.png" class="card-img-top" alt="">
                 <div class="card-body">
+                    <h6 class="card-title">@Model.Id</h6>
                     <h5 class="card-title">@Model.Name</h5>
                     <p class="card-text">@Model.Phone</p>
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">Дата регистрации: @Model.CreateTime</li>
                     <li class="list-group-item">Город: @Model.City</li>
+                    <li class="list-group-item">Роль: @Model.Role</li>
                 </ul>
             </div>
             <a class="btn btn-danger" asp-controller="Account" asp-action="Logout">Выйти</a>
@@ -25,13 +27,7 @@
         @if (User.IsInRole("root"))
         {
             <div class="col d-grid gap-2">
-                <a asp-controller="Emp" asp-action="Index" type="button" class="btn btn-info">Сотрудники</a>
-                <a asp-controller="NomType" asp-action="Index" type="button" class="btn btn-info">Типы товаров</a>
-                <a asp-controller="Nom" asp-action="Index" type="button" class="btn btn-info">Номенклатура</a>
-                <a asp-controller="Stock" asp-action="Index" type="button" class="btn btn-info">Склады</a>
-                <a asp-controller="Supply" asp-action="Index" type="button" class="btn btn-warning">Поставки</a>
-                <a asp-controller="NomStock" asp-action="Index" type="button" class="btn btn-warning">Товары на складах</a>
-                <a asp-controller="NomStock" asp-action="DepartIndex" type="button" class="btn btn-warning">Товары в отделах\на сайте</a>
+                <a asp-controller="" asp-action="" type="button" class="btn btn-warning">Товары в отделах\на сайте</a>
             </div>
         }
 
