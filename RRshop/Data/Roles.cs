@@ -2,8 +2,8 @@
 {
     public static class Roles
     {
-        public static string Root = "root";
-        public static string Admin = "admin";
-        public static string SUser = "user";
+        public const string Root = "root";
+        public const string Admin = "admin";
+        public const string SUser = "user";
     }
 }

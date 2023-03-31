@@ -56,7 +56,7 @@ public class ProdsController : Controller
 
         CreateProdViewModel vm = new CreateProdViewModel();
 
-        foreach(var size in SizeList)
+        foreach(var _ in SizeList)
         {
             vm.SizeChose.Add(false);
         }
@@ -66,7 +66,7 @@ public class ProdsController : Controller
 
 
     [HttpPost]
-    public async Task<IActionResult> Create(CreateProdViewModel viewModel)
+    public IActionResult Create(CreateProdViewModel viewModel)
     {
         Prod? newProd = _mapper.Map<Prod>(viewModel);
 
@@ -75,13 +75,13 @@ public class ProdsController : Controller
             _context.Add(newProd);
             _context.SaveChanges();
 
-            var DbProd = _context.Prods.First(db => db.Title == newProd.Title);
+            var dbProd = _context.Prods.First(db => db.Title == newProd.Title);
             for(int i = 0; i< viewModel.SizeChose.Count; i++)
             {
-                if (viewModel.SizeChose[i] == true)
+                if (viewModel.SizeChose[i])
                 {
                     string size = Convert.ToString(SizeList[i]).Replace(',', '.');
-                    var sql = string.Format("INSERT INTO size VALUES({0}, {1})", DbProd.Id, size);
+                    var sql = string.Format("INSERT INTO size VALUES({0}, {1})", dbProd.Id, size);
                     _context.Database.ExecuteSqlRaw(sql);
                     _context.SaveChanges();
                 }
@@ -97,7 +97,7 @@ public class ProdsController : Controller
     // GET: Prods/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
-        if (id == null || _context.Prods == null)
+        if (id == null)
         {
             return NotFound();
         }
@@ -159,7 +159,7 @@ public class ProdsController : Controller
     // GET: Prods/Delete/5
     public async Task<IActionResult> Delete(int? id)
     {
-        if (id == null || _context.Prods == null)
+        if (id == null)
         {
             return NotFound();
         }
@@ -179,14 +179,10 @@ public class ProdsController : Controller
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        if (_context.Prods == null)
-        {
-            return Problem("Entity set 'rrshopContext.Prods'  is null.");
-        }
         var prod = await _context.Prods.FindAsync(id);
         if (prod != null)
         {
-            DeleteOldImage(prod.ImgPath);
+            if (prod.ImgPath != null) DeleteOldImage(prod.ImgPath);
             _context.Prods.Remove(prod);
         }
 
@@ -196,15 +192,15 @@ public class ProdsController : Controller
 
     private bool ProdExists(int id)
     {
-        return (_context.Prods?.Any(e => e.Id == id)).GetValueOrDefault();
+        return (_context.Prods.Any(e => e.Id == id));
     }
 
     private async Task<string> SaveImage(ImageModel imageModel)
     {
-        if (imageModel != null)
+        DirectoryInfo directoryInfo = new DirectoryInfo(_env.WebRootPath + PathForProdImg);
+        if (directoryInfo.Exists)
         {
-            DirectoryInfo directoryInfo = new DirectoryInfo(_env.WebRootPath + PathForProdImg);
-            if (directoryInfo.Exists) { directoryInfo.Create(); }
+            directoryInfo.Create();
         }
 
         string fileName = Path.GetFileNameWithoutExtension(imageModel.ImageFile.FileName);
@@ -223,11 +219,10 @@ public class ProdsController : Controller
 
 
     [HttpGet]
-    public async Task<IActionResult> AddImage(int id)
+    public IActionResult AddImage(int id)
     {
         ImageModel image = new ImageModel() { ProdId = id };
         return View(image);
-
     }
 
 
@@ -237,11 +232,18 @@ public class ProdsController : Controller
         if (ModelState.IsValid)
         {
             var dbProd = await _context.Prods.FirstAsync(db => db.Id == imageModel.ProdId);
-            DeleteOldImage(dbProd.ImgPath);
-            
-            string fulFilename = await SaveImage(imageModel);
-            dbProd.ImgPath = fulFilename;
-            _context.Update(dbProd);
+            {
+                if (dbProd.ImgPath != null)
+                {
+                    DeleteOldImage(dbProd.ImgPath);
+
+                    string fulFilename = await SaveImage(imageModel);
+                    dbProd.ImgPath = fulFilename;
+                }
+
+                _context.Update((object)dbProd);
+            }
+
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
@@ -254,11 +256,11 @@ public class ProdsController : Controller
     private void ResetImage(int id)
     {
         var prod = _context.Prods.First(db => db.Id == id);
-        if (prod.ImgPath != "default.png")
+        if (prod.ImgPath != DefaultProdImgName)
         {
             FileInfo file = new FileInfo(Path.Combine(_env.WebRootPath + PathForProdImg + prod.ImgPath));
             file.Delete();
-            prod.ImgPath = "default.png";
+            prod.ImgPath = DefaultProdImgName;
             _context.Update(prod);
             _context.SaveChanges();
         }
@@ -266,7 +268,7 @@ public class ProdsController : Controller
 
     private void DeleteOldImage(string imageTitle)
     {
-        if (imageTitle != "default.png")
+        if (imageTitle != DefaultProdImgName)
         {
             FileInfo file = new FileInfo(Path.Combine(_env.WebRootPath + PathForProdImg + imageTitle));
             file.Delete();
