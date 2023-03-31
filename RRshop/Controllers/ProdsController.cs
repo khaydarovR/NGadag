@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RRshop.Models;
 using RRshop.ViewModels;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace RRshop.Controllers
 {
@@ -70,7 +72,20 @@ namespace RRshop.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(newProd);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
+
+                var DbProd = _context.Prods.First(db => db.Title == newProd.Title);
+                for(int i = 0; i< viewModel.SizeChose.Count; i++)
+                {
+                    if (viewModel.SizeChose[i] == true)
+                    {
+                        //TO DO
+                        var sql = $"INSERT INTO size VALUES({DbProd.Id}, {Data.Sizes.SizeList[i]})";
+                        _context.Database.ExecuteSqlRaw(sql);
+                        _context.SaveChanges();
+                    }
+                }
+                
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CategoryTitle"] = new SelectList(_context.Categories, "Id", "Title");
