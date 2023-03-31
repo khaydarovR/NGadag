@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using RRshop.DTO;
 using RRshop.Models;
 
+System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

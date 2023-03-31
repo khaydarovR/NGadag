@@ -55,8 +55,8 @@ namespace RRshop.Controllers
                 _context.Add(newUser);
                 await _context.SaveChangesAsync();
 
-                User? userDB = await _context.Users.FirstOrDefaultAsync(usr => usr.Phone == newUser.Phone);
-                var principal = GetClaimsPrincipalDefault(userDB);
+                User? userDb = await _context.Users.FirstOrDefaultAsync(usr => usr.Phone == newUser.Phone);
+                var principal = GetClaimsPrincipalDefault(userDb);
                 await HttpContext.SignInAsync(principal);
 
                 return RedirectToAction(nameof(Index));
