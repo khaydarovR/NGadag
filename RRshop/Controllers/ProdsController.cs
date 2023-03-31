@@ -50,7 +50,15 @@ namespace RRshop.Controllers
         public IActionResult Create()
         {
             ViewData["CategoryTitle"] = new SelectList(_context.Categories, "Id", "Title");
-            return View();
+
+            CreateProdViewModel vm = new CreateProdViewModel();
+
+            foreach(var size in Data.Sizes.SizeList)
+            {
+                vm.SizeChose.Add(false);
+            }
+
+            return View(vm);
         }
 
 
@@ -230,6 +238,7 @@ namespace RRshop.Controllers
 
         private void ResetImage(int id)
         {
+            //to do remove old image
             var prod = _context.Prods.First(db => db.Id == id);
             prod.ImgPath = "default.png";
             _context.SaveChanges();

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using RRshop.Data;
+using System.ComponentModel.DataAnnotations;
 
 namespace RRshop.ViewModels
 {
@@ -10,6 +11,8 @@ namespace RRshop.ViewModels
         [Required] public int CategoryId { get; set; }
 
         [Required] public float Price { get; set; }
+
+        public List<bool> SizeChose { get; set; } = new List<bool>();
 
         public string Color { get; set; }
     }

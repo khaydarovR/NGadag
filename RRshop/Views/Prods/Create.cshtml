@@ -1,4 +1,5 @@
 ﻿@using RRshop.ViewModels
+@using RRshop.Data
 @model CreateProdViewModel;
 
 @{
@@ -12,7 +13,7 @@
 <h4>Prod</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -35,13 +36,17 @@
                 <span asp-validation-for="Color" class="text-danger"></span>
             </div>
 
-
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-                <label class="form-check-label" for="inlineCheckbox1">1</label>
+            <div class="form-group m-2">
+            @for (int i = 0; i < Model.SizeChose.Count-1; i++)
+            {
+                <div class="form-check form-check-inline">
+                    <input asp-for="SizeChose[i]" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="@Model.SizeChose.ElementAt(i)">
+                    <label class="form-check-label" for="inlineCheckbox1">@Sizes.SizeList.ElementAt(i)</label>
+                </div>
+            }
             </div>
 
-           <input type="submit" value="Create" class="btn btn-primary" />
+           <input type="submit" value="Create" class="btn btn-primary mt-3" />
         </form>
     </div>
 </div>
