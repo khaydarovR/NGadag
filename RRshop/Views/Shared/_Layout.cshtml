@@ -34,17 +34,8 @@
 
                         <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
                             <ul class="navbar-nav d-sm-inline-flex justify-content-end">
-                                @if (User.IsInRole(NGadag.Data.Roles.SUser))
-                                {
-                                    <li class="nav-item">
-                                        <a class="nav-link text-success bg-light border-1" asp-area="" asp-controller="Account" asp-action="Register">Корзина</a>
-                                    </li>
-                                }
                                 <li class="nav-item">
-                                    <a class="nav-link text-success bg-light border-1" asp-area="" asp-controller="Account" asp-action="Index">Аккаунт</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-success bg-light border-1" asp-area="" asp-controller="Account" asp-action="Register">Регистрация</a>
+                                    <a class="nav-link text-success bg-light border-1" asp-area="" asp-controller="Account" asp-action="Index">Админка</a>
                                 </li>
                             </ul>
                         </div>

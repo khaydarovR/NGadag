@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NGadag.Models;
-using RRshop.Data;
+using NGadag.Data;
 using RRshop.ViewModels;
 using System.Security.Claims;
 
@@ -77,7 +77,11 @@ namespace RRshop.Controllers
         public async Task<IActionResult> Login(LoginViewModel viewModel)
         {
             if (!ModelState.IsValid) return View(viewModel);
-            User logUser = _mapper.Map<User>(viewModel);
+            User logUser = new User()
+            {
+                Phone = viewModel.Phone,
+                Password = viewModel.Password
+            };
 
             try
             {

@@ -1,4 +1,4 @@
-﻿namespace RRshop.Data
+﻿namespace NGadag.Data
 {
     public static class Roles
     {
