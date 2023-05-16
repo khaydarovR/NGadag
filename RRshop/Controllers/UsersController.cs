@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RRshop.Models;
+using NGadag.Models;
 
 namespace RRshop.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly NGcontext _context;
+        private readonly ngadagContext _context;
 
-        public UsersController(NGcontext context)
+        public UsersController(ngadagContext context)
         {
             _context = context;
         }

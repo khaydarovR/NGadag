@@ -1,8 +1,8 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using NGadag.Models;
 using RRshop.DTO;
-using RRshop.Models;
 
 System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
 
@@ -16,7 +16,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, (conf) => conf.LoginPath = "/Account/Login");
 builder.Services.AddAuthorization();
 
-builder.Services.AddDbContext<NGcontext>(options =>
+builder.Services.AddDbContext<ngadagContext>(options =>
 options.UseMySql(builder.Configuration.GetConnectionString("MySql"), ServerVersion.Parse("8.0.32-mysql")));
 
 builder.Services.AddAutoMapper(typeof(UserMapping));

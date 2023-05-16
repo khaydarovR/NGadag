@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using RRshop.Models;
+using NGadag.Models;
 using RRshop.ViewModels;
 
 namespace RRshop.DTO

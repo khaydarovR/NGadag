@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RRshop.Models;
 using System.Diagnostics;
 
 namespace RRshop.Controllers
@@ -26,7 +25,7 @@ namespace RRshop.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View();
         }
     }
 }

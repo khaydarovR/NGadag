@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NGadag.Models;
 using RRshop.Data;
-using RRshop.Models;
 using RRshop.ViewModels;
 using System.Security.Claims;
 
@@ -13,10 +13,10 @@ namespace RRshop.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly rrshopContext _context;
+        private readonly ngadagContext _context;
         private readonly IMapper _mapper;
 
-        public AccountController(rrshopContext context, IMapper mapper)
+        public AccountController(ngadagContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
