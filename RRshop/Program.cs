@@ -16,7 +16,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, (conf) => conf.LoginPath = "/Account/Login");
 builder.Services.AddAuthorization();
 
-builder.Services.AddDbContext<rrshopContext>(options =>
+builder.Services.AddDbContext<NGcontext>(options =>
 options.UseMySql(builder.Configuration.GetConnectionString("MySql"), ServerVersion.Parse("8.0.32-mysql")));
 
 builder.Services.AddAutoMapper(typeof(UserMapping));
@@ -46,6 +46,6 @@ app.MapControllerRoute(
 
 app.Run();
 
-//Scaffold-DbContext "Server=localhost; Port=3306; Database=rrshop; Uid=root; Pwd=root" Pomelo.EntityFrameworkCore.MySql -OutputDir Models -f
+//Scaffold-DbContext "Server=localhost; Port=3306; Database=ngadag; Uid=root; Pwd=root" Pomelo.EntityFrameworkCore.MySql -OutputDir Models -f
 
 //dotnet aspnet-codegenerator controller -m Category -dc MyDbContext -rrshopContext CategoriesController -async

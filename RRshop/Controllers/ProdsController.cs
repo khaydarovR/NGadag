@@ -11,11 +11,11 @@ namespace RRshop.Controllers;
 
 public class ProdsController : Controller
 {
-    private readonly rrshopContext _context;
+    private readonly NGcontext _context;
     private readonly IMapper _mapper;
     private readonly IWebHostEnvironment _env;
 
-    public ProdsController(rrshopContext context, IMapper mapping, IWebHostEnvironment env)
+    public ProdsController(NGcontext context, IMapper mapping, IWebHostEnvironment env)
     {
         _context = context;
         _mapper = mapping;

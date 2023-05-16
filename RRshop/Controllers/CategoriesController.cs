@@ -6,9 +6,9 @@ namespace RRshop.Controllers
 {
     public class CategoriesController : Controller
     {
-        private readonly rrshopContext _context;
+        private readonly NGcontext _context;
 
-        public CategoriesController(rrshopContext context)
+        public CategoriesController(NGcontext context)
         {
             _context = context;
         }

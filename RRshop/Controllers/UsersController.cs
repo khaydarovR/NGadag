@@ -6,9 +6,9 @@ namespace RRshop.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly rrshopContext _context;
+        private readonly NGcontext _context;
 
-        public UsersController(rrshopContext context)
+        public UsersController(NGcontext context)
         {
             _context = context;
         }
