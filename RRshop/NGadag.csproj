@@ -26,6 +26,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
+    <Folder Include="wwwroot\img\ad\" />
   </ItemGroup>
 
 </Project>

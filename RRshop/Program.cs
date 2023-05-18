@@ -5,6 +5,7 @@ using NGadag.Models;
 using RRshop.DTO;
 
 System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+Console.WriteLine("Start 0");
 
 var builder = WebApplication.CreateBuilder(args);
 
