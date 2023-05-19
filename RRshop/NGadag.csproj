@@ -26,7 +26,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
-    <Folder Include="wwwroot\img\ad\" />
+    <Folder Include="wwwroot\img\services\" />
   </ItemGroup>
 
 </Project>

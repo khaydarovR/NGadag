@@ -13,6 +13,13 @@
     <div class="col-md-8">
         <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="All" class="text-danger"></div>
+            
+            <div class="form-group">
+                <label asp-for="HeadImage" class="control-label"></label>
+                <input asp-for="HeadImage" class="form-control" accept="image/jpeg,image/jpg,image/png" />
+                <span asp-validation-for="HeadImage" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
@@ -23,15 +30,20 @@
                 <textarea asp-for="Descriptions" class="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
                 <span asp-validation-for="Descriptions" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Icon" class="control-label"></label>
-                <input asp-for="Icon" class="form-control" />
+                <input asp-for="Icon" class="form-control" accept="image/jpeg,image/jpg,image/png" />
                 <span asp-validation-for="Icon" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="ImageFile" class="control-label"></label>
-                <input asp-for="ImageFile" class="form-control" accept="image/jpeg,image/jpg,image/png" />
-                <span asp-validation-for="ImageFile" class="text-danger"></span>
+                <label asp-for="Samples" class="control-label"></label>
+                <input asp-for="@Model.Samples" class="form-control" accept="image/jpeg,image/jpg,image/png" />
+                <input asp-for="@Model.Samples" class="form-control" accept="image/jpeg,image/jpg,image/png" />
+                <input asp-for="@Model.Samples" class="form-control" accept="image/jpeg,image/jpg,image/png" />
+                <input asp-for="@Model.Samples" class="form-control" accept="image/jpeg,image/jpg,image/png" />
+                <input asp-for="@Model.Samples" class="form-control" accept="image/jpeg,image/jpg,image/png" />
             </div>
 
             <div class="form-group">

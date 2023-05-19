@@ -4,11 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using NGadag.Models;
 using NGadag.ViewModels;
 using NGadag.Data;
-using RRshop.ViewModels;
-using System;
 using NGadag.DTO;
-using System.Data;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace NGadag.Controllers
 {
@@ -57,7 +53,13 @@ namespace NGadag.Controllers
         // GET: Ads/Create
         public IActionResult Create()
         {
-            return View();
+            var model = new CreateAdViewModel()
+            {
+                Title = "Реклама на ...",
+                Descriptions = "Описание услуги ...",
+                Samples = new List<IFormFile>(5)
+            };
+            return View(model);
         }
 
 
@@ -67,11 +69,28 @@ namespace NGadag.Controllers
            
             if (ModelState.IsValid)
             {
-                string fulFilename = await SaveImage(model);
+                string headfulFilename = await SaveImage(model.HeadImage);
+                string iconFileName = await SaveImage(model.Icon);
+
                 Ad newAd = mapping.Map<Ad>(model);
-                newAd.Photo = fulFilename;
+                newAd.Photo = headfulFilename;
+                newAd.Icon = iconFileName;
+
 
                 await _context.Ads.AddAsync(newAd);
+                await _context.SaveChangesAsync();
+
+                var dbAd = await _context.Ads.SingleAsync(a => a.Title == model.Title);
+                foreach (var sampleImage in model.Samples)
+                {
+                    var fileName = await SaveImage(sampleImage);
+                    _context.AdPhotos.Add(new AdPhoto()
+                    {
+                        AdId = dbAd.Id,
+                        Photo = fileName,
+                        Ad = dbAd
+                    });
+                }
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
@@ -79,7 +98,7 @@ namespace NGadag.Controllers
             return View(model);
         }
 
-        private async Task<string> SaveImage(CreateAdViewModel model)
+        private async Task<string> SaveImage(IFormFile model)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(env.WebRootPath + Literals.PathForProdImg);
             if (directoryInfo.Exists)
@@ -87,19 +106,19 @@ namespace NGadag.Controllers
                 directoryInfo.Create();
             }
             
-            string fileName = Path.GetFileNameWithoutExtension(model.ImageFile.Length.ToString());
-            string extension = Path.GetExtension(model.ImageFile.FileName).ToLower();
+            string fileName = Path.GetFileNameWithoutExtension(model.Length.ToString());
+            string extension = Path.GetExtension(model.FileName).ToLower();
 
             string fulFilename = DateTime.Now.Hour.ToString()
                 + DateTime.Now.DayOfYear.ToString()
                 + DateTime.Now.Minute.ToString()
-                + DateTime.Now.Second.ToString()
+                + model.GetHashCode().ToString()
                 + fileName + extension;
             string fullPath = Path.Combine(env.WebRootPath + Literals.PathForProdImg + fulFilename);
 
             using (var fileStream = new FileStream(fullPath, FileMode.Create))
             {
-                await model.ImageFile.CopyToAsync(fileStream);
+                await model.CopyToAsync(fileStream);
             }
 
             return fulFilename;
@@ -205,11 +224,17 @@ namespace NGadag.Controllers
             {
                 return Problem("Entity set 'ngadagContext.Ads'  is null.");
             }
-            var ad = await _context.Ads.FindAsync(id);
+            var ad = await _context.Ads.Include(t => t.AdPhotos).SingleAsync(t => t.Id == id);
             if (ad != null)
             {
-                _context.Ads.Remove(ad);
+                foreach (var p in ad.AdPhotos)
+                {
+                    DeleteOldImage(p.Photo.ToString());
+                    _context.AdPhotos.Remove(p);
+                }
                 DeleteOldImage(ad.Photo.ToString());
+                DeleteOldImage(ad.Icon.ToString());
+                _context.Ads.Remove(ad);
             }
 
             await _context.SaveChangesAsync();
