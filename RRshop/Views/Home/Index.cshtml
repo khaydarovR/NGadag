@@ -1,8 +1,36 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using NGadag.Data;
+@model IEnumerable<NGadag.Models.Ad>
+
+@{
+    ViewData["Title"] = "Услуги";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1>Услуги</h1>
+<div class="container mt-5 mb-5">
+    <div class="d-flex justify-content-center row">
+        <div class="col-md-10">
+
+            @foreach (var item in Model)
+            {
+                <div class="row p-2 bg-white border rounded">
+                    <div class="col-md-3 mt-1"><img class="img-fluid img-responsive rounded product-image"
+                        src="@Literals.PathForProdImg@item.Icon"></div>
+                    <div class="col-md-6 mt-1">
+                        <h5>@item.Title</h5>
+                        <p class="text-justify text-truncate para mb-0">@item.Descriptions<br><br></p>
+                    </div>
+                    <div class="align-items-center align-content-center col-md-3 border-left mt-1">
+                        <div class="d-flex flex-row align-items-center">
+                        </div>
+                        <div class="d-flex flex-column mt-4">
+                            <a asp-action="Details" class="btn btn-primary btn-sm" type="button">Details</a>
+                        </div>
+                    </div>
+                </div>
+            }
+            
+        </div>
+      
+    </div>
 </div>
