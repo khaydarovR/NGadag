@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NGadag.Data;
 using NGadag.Models;
+using NGadag.ViewModels;
 
 namespace NGadag.Controllers
 {
@@ -51,8 +53,15 @@ namespace NGadag.Controllers
         [AllowAnonymous]
         public IActionResult Create()
         {
-            return View();
+            var compInfo = _context.Companyinfos.ToList();
+            var model = new CreateInfo()
+            {
+                CompInfo = compInfo,
+                Applications = new Applications()
+            };
+            return View(model);
         }
+
 
         // POST: Applications/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -66,7 +75,7 @@ namespace NGadag.Controllers
             {
                 _context.Add(Applications);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Home");
             }
             return View(Applications);
         }

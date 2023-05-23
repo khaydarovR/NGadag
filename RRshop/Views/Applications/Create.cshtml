@@ -1,4 +1,4 @@
-@model NGadag.Models.Applications
+@model NGadag.ViewModels.CreateInfo
 @{
     ViewData["Title"] = "Заявка";
 }
@@ -6,35 +6,57 @@
 <h4>Оставте завку</h4>
 <hr />
 <div class="row">
-    <div class="col-md-8">
+
+    <div class="col-md-6">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="@Model.Applications.Name" class="control-label"></label>
+                <input asp-for="@Model.Applications.Name" class="form-control" />
+                <span asp-validation-for="@Model.Applications.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+                <label asp-for="@Model.Applications.Email" class="control-label"></label>
+                <input asp-for="@Model.Applications.Email" class="form-control" />
+                <span asp-validation-for="@Model.Applications.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
+                <label asp-for="@Model.Applications.Phone" class="control-label"></label>
+                <input asp-for="@Model.Applications.Phone" class="form-control" />
+                <span asp-validation-for="@Model.Applications.Phone" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Message" class="control-label"></label>
-                <textarea rows="15" asp-for="Message" class="form-control">
-                    Я бы хотел заказ рекламу своего магазина ...
+                <label asp-for="@Model.Applications.Message" class="control-label"></label>
+                <textarea placeholder="Я бы хотел заказ рекламу своего магазина ..." rows="15" asp-for="@Model.Applications.Message" class="form-control">
+                    
                 </textarea>
-                <span asp-validation-for="Message" class="text-danger"></span>
+                <span asp-validation-for="@Model.Applications.Message" class="text-danger"></span>
             </div>
             <div class="form-group mt-5">
                 <input type="submit" value="Создать" class="btn btn-primary" />
             </div>
         </form>
+    </div>
+
+    <div class="col-md-6">
+        <h5>Наши реквизиты</h5>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in @Model.CompInfo)
+                {
+                    <tr>
+                        <td>@item.InfoType</td>
+                        <td>@item.InfoValue</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
 
