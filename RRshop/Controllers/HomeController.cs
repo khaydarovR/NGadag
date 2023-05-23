@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NGadag.DTO;
 using NGadag.Models;
+using NGadag.ViewModels;
 using System.Diagnostics;
 
 namespace RRshop.Controllers
@@ -27,13 +28,14 @@ namespace RRshop.Controllers
             return View(res);
         }
 
-        public async Task<IActionResult> Details(Guid id)
+        public async Task<IActionResult> Details(int id)
         {
-            var res = await context.Ads
+            var model = await context.Ads
                 .Include(t => t.AdPhotos)
-                .ToListAsync();
+                .SingleAsync(s => s.Id == id);
+            
 
-            return View(res);
+            return View(model);
         }
 
         public IActionResult Privacy()

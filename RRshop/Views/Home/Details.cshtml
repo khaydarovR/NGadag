@@ -1,9 +1,38 @@
 ﻿@using NGadag.Data;
-@model IEnumerable<NGadag.Models.Ad>
+@model NGadag.Models.Ad;
 
 @{
     ViewData["Title"] = "Услуги";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Услуга: </h1>
+<div class="row clearfix">
+    <div class="col-lg-10 col-md-12 left-box">
+        <div class="card single_post">
+            <div class="body">
+                <div class="img-post">
+                    <img class="img-fluid img-responsive rounded product-image" src="@Literals.PathForProdImg@Model.Photo">
+                </div>
+                <h1 class="text-center">@Model.Title</h1>
+                <hr/>
+                <p>@Model.Descriptions</p>
+                <div class="text-center">
+                    <a asp-controller="Applications" asp-action="Create"
+                    type="button" class="btn-lg btn-warning">Оставить заявку</a>
+                </div>
+                <h2 class="text-center mt-3">Примеры работ</h2>
+            </div>
+        </div>
+        <div class="row text-center text-lg-start">
+            @for (int i = 0; i < @Model.AdPhotos.Count; i++)
+            {
+                <div class="col-lg-3 col-md-4 col-6">
+                    <a href="#" class="d-block mb-4 h-100">
+                        <img class="img-fluid img-thumbnail" src="@Literals.PathForProdImg@Model.AdPhotos.ElementAt(i).Photo" alt="">
+                    </a>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

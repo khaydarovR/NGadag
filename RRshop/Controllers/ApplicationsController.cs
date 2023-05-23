@@ -1,5 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NGadag.Data;
 using NGadag.Models;
@@ -7,87 +12,89 @@ using NGadag.Models;
 namespace NGadag.Controllers
 {
     [Authorize(Roles = Roles.Root)]
-    public class CompanyinfoesController : Controller
+    public class ApplicationsController : Controller
     {
         private readonly ngadagContext _context;
 
-        public CompanyinfoesController(ngadagContext context)
+        public ApplicationsController(ngadagContext context)
         {
             _context = context;
         }
 
-        // GET: Companyinfoes
+        // GET: Applications
         public async Task<IActionResult> Index()
         {
-              return _context.Companyinfos != null ? 
-                          View(await _context.Companyinfos.ToListAsync()) :
-                          Problem("Entity set 'ngadagContext.Companyinfos'  is null.");
+            return _context.Applications != null ?
+                        View(await _context.Applications.ToListAsync()) :
+                        Problem("Entity set 'ngadag.Applications'  is null.");
         }
 
-        // GET: Companyinfoes/Details/5
+        // GET: Applications/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Companyinfos == null)
+            if (id == null || _context.Applications == null)
             {
                 return NotFound();
             }
 
-            var companyinfo = await _context.Companyinfos
+            var Applications = await _context.Applications
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (companyinfo == null)
+            if (Applications == null)
             {
                 return NotFound();
             }
 
-            return View(companyinfo);
+            return View(Applications);
         }
 
-        // GET: Companyinfoes/Create
+        // GET: Applications/Create
+        [AllowAnonymous]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Companyinfoes/Create
+        // POST: Applications/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,InfoType,InfoValue")] Companyinfo companyinfo)
+        [AllowAnonymous]
+        public async Task<IActionResult> Create([Bind("Id,Name,Email,Phone,Message")] Applications Applications)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(companyinfo);
+                _context.Add(Applications);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(companyinfo);
+            return View(Applications);
         }
 
-        // GET: Companyinfoes/Edit/5
+        // GET: Applications/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Companyinfos == null)
+            if (id == null || _context.Applications == null)
             {
                 return NotFound();
             }
 
-            var companyinfo = await _context.Companyinfos.FindAsync(id);
-            if (companyinfo == null)
+            var Applications = await _context.Applications.FindAsync(id);
+            if (Applications == null)
             {
                 return NotFound();
             }
-            return View(companyinfo);
+            return View(Applications);
         }
 
-        // POST: Companyinfoes/Edit/5
+        // POST: Applications/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,InfoType,InfoValue")] Companyinfo companyinfo)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Email,Phone,Message")] Applications Applications)
         {
-            if (id != companyinfo.Id)
+            if (id != Applications.Id)
             {
                 return NotFound();
             }
@@ -96,12 +103,12 @@ namespace NGadag.Controllers
             {
                 try
                 {
-                    _context.Update(companyinfo);
+                    _context.Update(Applications);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CompanyinfoExists(companyinfo.Id))
+                    if (!ApplicationsExists(Applications.Id))
                     {
                         return NotFound();
                     }
@@ -112,49 +119,49 @@ namespace NGadag.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(companyinfo);
+            return View(Applications);
         }
 
-        // GET: Companyinfoes/Delete/5
+        // GET: Applications/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Companyinfos == null)
+            if (id == null || _context.Applications == null)
             {
                 return NotFound();
             }
 
-            var companyinfo = await _context.Companyinfos
+            var Applications = await _context.Applications
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (companyinfo == null)
+            if (Applications == null)
             {
                 return NotFound();
             }
 
-            return View(companyinfo);
+            return View(Applications);
         }
 
-        // POST: Companyinfoes/Delete/5
+        // POST: Applications/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Companyinfos == null)
+            if (_context.Applications == null)
             {
-                return Problem("Entity set 'ngadagContext.Companyinfos'  is null.");
+                return Problem("Entity set 'ngadag.Applications'  is null.");
             }
-            var companyinfo = await _context.Companyinfos.FindAsync(id);
-            if (companyinfo != null)
+            var Applications = await _context.Applications.FindAsync(id);
+            if (Applications != null)
             {
-                _context.Companyinfos.Remove(companyinfo);
+                _context.Applications.Remove(Applications);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CompanyinfoExists(int id)
+        private bool ApplicationsExists(int id)
         {
-          return (_context.Companyinfos?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Applications?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

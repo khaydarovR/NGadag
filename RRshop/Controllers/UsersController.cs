@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NGadag.Data;
 using NGadag.Models;
 
 namespace RRshop.Controllers
 {
+    [Authorize(Roles = Roles.Root)]
     public class UsersController : Controller
     {
         private readonly ngadagContext _context;

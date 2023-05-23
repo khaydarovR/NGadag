@@ -3,11 +3,14 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using NGadag.Models;
 using RRshop.DTO;
+using Microsoft.Extensions.DependencyInjection;
 
 System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
 Console.WriteLine("Start 0");
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<ngadag>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ngadag") ?? throw new InvalidOperationException("Connection string 'ngadag' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

@@ -18,7 +18,7 @@ namespace NGadag.Models
 
         public virtual DbSet<Ad> Ads { get; set; } = null!;
         public virtual DbSet<AdPhoto> AdPhotos { get; set; } = null!;
-        public virtual DbSet<Application> Applications { get; set; } = null!;
+        public virtual DbSet<Applications> Applications { get; set; } = null!;
         public virtual DbSet<Companyinfo> Companyinfos { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
 
@@ -67,9 +67,9 @@ namespace NGadag.Models
                     .HasConstraintName("FK_ad");
             });
 
-            modelBuilder.Entity<Application>(entity =>
+            modelBuilder.Entity<Applications>(entity =>
             {
-                entity.ToTable("applications");
+                entity.ToTable("Applications");
 
                 entity.Property(e => e.Email).HasMaxLength(45);
 

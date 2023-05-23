@@ -5,9 +5,11 @@ using NGadag.Models;
 using NGadag.ViewModels;
 using NGadag.Data;
 using NGadag.DTO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NGadag.Controllers
 {
+    [Authorize(Roles = Roles.Root)]
     public class AdsController : Controller
     {
         private readonly ngadagContext _context;
@@ -27,7 +29,7 @@ namespace NGadag.Controllers
             var res = await _context.Ads.ToListAsync();
             foreach(var m in res)
             {
-                m.Descriptions = m.Descriptions is not null ? Utils.Substring(m.Descriptions, 50) : "null";
+                m.Descriptions = m.Descriptions is not null ? Utils.Substring(m.Descriptions, 150) : "null";
             }
             return View(res);
         }
